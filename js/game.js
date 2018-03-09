@@ -150,7 +150,7 @@ loadInterface();
 //переменные
 var playerX, playerY;
 playerX = 10;
-playerY = 248;
+playerY = 240;
 var mouseX, mouseY;
 
 //создание кадров
@@ -208,22 +208,29 @@ var playerSpeed = 5;
 var movePlayerTimeout;
 
 function moveController(e){
+  canvasOffset=$("#canvas").offset();
+  offsetX=canvasOffset.left;
+  offsetY=canvasOffset.top;
   mouseX=parseInt(e.clientX-offsetX);
   mouseY=parseInt(e.clientY-offsetY);
-
+  //alert('mouseX: ' + mouseX + " | " + offsetX);
 }
 function movePlayer(dir){
   switch (dir) {
     case 'up':
+    if(playerY > 0)
       playerY -= playerSpeed;
       break;
     case 'left':
+    if(playerX > 0)
       playerX -= playerSpeed;
       break;
     case 'right':
+    if(playerX < 916)
       playerX += playerSpeed;
       break;
     case 'down':
+    if(playerY < 548)
       playerY += playerSpeed;
       break;
     default:

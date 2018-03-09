@@ -1,0 +1,35 @@
+#content{
+  border: 1px solid #c24b05;
+  //padding: 5px;
+  width: 960px;
+  height: 600px;
+  position: absolute;
+  left: calc(50% - 480px);
+  top: calc(50% - 300px);
+}
+
+#submitBtn{
+  width: 120px;
+  height: 40px;
+  border: 1px solid #c24b05;
+  background-color: #eaeaea;
+}
+
+.middle{
+  width: 700px;
+  margin-left: calc(50% - 350px);
+  text-align: center;
+}
+
+.playerData{
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+hr{
+  border-bottom-color: #c24b05;
+}
+
+canvas{
+  margin: 0;
+}

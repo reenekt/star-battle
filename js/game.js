@@ -2,6 +2,8 @@
 var canvas = document.getElementById("canvas");
 var c = canvas.getContext('2d');
 
+console.log('game.js loaded!')
+
 //Background - космос
 var backgroundImg = new Image();
 backgroundImg.onload = function() {
@@ -116,10 +118,10 @@ areasImgDown.onload = function() {
 areasImgDown.src = '../img/areas.png';
 
 /** загрузка фонового изображения и интерфейса **/
-function loadBackground(){
+function drawBackground(){
   c.drawImage(backgroundImg, 0, 0);
 }
-function loadInterface(){
+function drawInterface(){
   c.globalAlpha = 0.8;
 
   c.drawImage(timerImg, 0, 0);
@@ -144,19 +146,156 @@ function drawPlayer(x, y){
   c.drawImage(playerImg, x, y)
 }
 
-loadBackground();
-loadInterface();
+drawBackground();
+drawInterface();
 
-//переменные
+/********************/
+/**** переменные ****/
+/********************/
+
 var playerX, playerY;
 playerX = 10;
 playerY = 240;
+
+var friends = [];
+var enemies = [];
+
 var mouseX, mouseY;
+var direction = 'none';
+var playerSpeed = 150; //скорость (пунктов в секунду)
+
+//выстрелы(снаряды), астрероиды и планеты на фоне
+var playerShootSpeed = 200; //скорость выстрела игрока (пунктов в секунду)
+var playerShoots = [];
+
+var friendShootSpeed = 200; //скорость выстрела дружеских кораблей (пунктов в секунду)
+var friendShoots = [];
+
+var enemyShootSpeed = 100; //скорость выстрела вражеских кораблей (пунктов в секунду)
+var enemyShoots = [];
+
+var asteroidSpeed = 100; //скорость движения астероидов (пунктов в секунду)
+var asteroids = [];
+
+var planets = [];
 
 //создание кадров
 var gameProcess = setTimeout(drawAll, 1000/60);
 
 function drawAll(){
+  drawBackground();
+  drawInterface();
+  
+  defineDirection(); //определение направления движения игрока
+  movePlayer(direction); //передвижение игрока
+
+  //функции обновления объектов (координат)
+  updateAllShoots();
+
+  //функции рисования обхектов
+  drawAllShoots();
+
+  drawPlayer(playerX, playerY);
+
+  //водготовка следующего кадра
+  gameProcess = setTimeout(drawAll, 1000/60);
+}
+
+this.addEventListener('keyup', keyboardHandler); //обработка событий клавиатуры
+
+function keyboardHandler(e) {
+  //P - 80 - пауза
+  //Space - 32 - выстрел
+  //alert(e.keyCode);
+  switch (e.keyCode) {
+    case 32:
+      playerShoot();
+      break;
+    case 80:
+      switchPauseMode();
+      break;
+    default:
+
+  }
+}
+
+function playerShoot(){
+  playerShoots.push({
+    x: playerX+44,
+    y: playerY+23,
+    speed: playerShootSpeed
+  });
+}
+function friendShoot(friend){
+  friendShoots.push({
+    x: friend.x+friend.width,
+    y: friend.x+friend.height-3,
+    speed: friendShootSpeed
+  });
+}
+function enemyShoot(enemy){
+  enemyShoots.push({
+    x: enemy.x+enemy.width,
+    y: enemy.x+enemy.height-3,
+    speed: enemyShootSpeed
+  });
+}
+
+function drawAllShoots(){
+  drawPlayerShoots();
+  drawFriendShoots();
+  drawEnemyShoots();
+}
+function drawPlayerShoots(){
+  for(var i in playerShoots){
+    c.drawImage(shootImg, 0, 0, 36, 5,
+                          playerShoots[i].x, playerShoots[i].y, 36, 5);
+  }
+}
+function drawFriendShoots(){
+  for(var i in friendShoots){
+    c.drawImage(shootImg, 0, 0, 36, 5,
+                          friendShoots[i].x, friendShoots[i].y, 36, 5);
+  }
+}
+function drawEnemyShoots(){
+  for(var i in enemyShoots){
+    c.drawImage(shootImg, 0, 0, 36, 5,
+                          enemyShoots[i].x, enemyShoots[i].y, 36, 5);
+  }
+}
+
+function updateAllShoots(){
+  updatePlayerShoots();
+  updateFriendShoots();
+  updateEnemyShoots();
+}
+function updatePlayerShoots(){
+  for(var i in playerShoots){
+    if(playerShoots[i].x < 960)
+      playerShoots[i].x += playerShoots[i].speed/60;
+    else
+      playerShoots.splice(i, 1);
+  }
+}
+function updateFriendShoots(){
+  for(var i in friendShoots){
+    if(friendShoots[i].x < 960)
+      friendShoots[i].x += friendShoots[i].speed/60;
+    else
+      friendShoots.splice(i, 1);
+  }
+}
+function updateEnemyShoots(){
+  for(var i in enemyShoots){
+    if(enemyShoots[i].x > -35)
+      enemyShoots[i].x += enemyShoots[i].speed/60;
+    else
+      enemyShoots.splice(i, 1);
+  }
+}
+
+function defineDirection(){
   if(isInside(mouseX, mouseY, 100, 300, 100, 100))
   {
     //alert('up');
@@ -180,11 +319,6 @@ function drawAll(){
   else{
     direction = 'none';
   }
-  movePlayer(direction);
-  loadBackground();
-  loadInterface();
-  drawPlayer(playerX, playerY);
-  gameProcess = setTimeout(drawAll, 1000/60);
 }
 
 /** Контроль движения **/
@@ -203,10 +337,6 @@ function isInside(pX, pY, x, y, width, height){
   return false;
 }
 
-var direction = 'none';
-var playerSpeed = 5;
-var movePlayerTimeout;
-
 function moveController(e){
   canvasOffset=$("#canvas").offset();
   offsetX=canvasOffset.left;
@@ -219,19 +349,19 @@ function movePlayer(dir){
   switch (dir) {
     case 'up':
     if(playerY > 0)
-      playerY -= playerSpeed;
+      playerY -= playerSpeed/60;
       break;
     case 'left':
     if(playerX > 0)
-      playerX -= playerSpeed;
+      playerX -= playerSpeed/60;
       break;
     case 'right':
     if(playerX < 916)
-      playerX += playerSpeed;
+      playerX += playerSpeed/60;
       break;
     case 'down':
     if(playerY < 548)
-      playerY += playerSpeed;
+      playerY += playerSpeed/60;
       break;
     default:
     //ничего

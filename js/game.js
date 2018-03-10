@@ -179,21 +179,28 @@ var asteroids = [];
 
 var planets = [];
 
+var shipSpawnerTimer = 10; //1 секунда = 60 кадрам
+
+/**** основная функция ****/
 //создание кадров
 var gameProcess = setTimeout(drawAll, 1000/60);
 
 function drawAll(){
+  commonProcesses();
+
   drawBackground();
   drawInterface();
-  
+
   defineDirection(); //определение направления движения игрока
   movePlayer(direction); //передвижение игрока
 
   //функции обновления объектов (координат)
+  updateAllShips();
   updateAllShoots();
 
   //функции рисования обхектов
   drawAllShoots();
+  drawAllShips();
 
   drawPlayer(playerX, playerY);
 
@@ -215,8 +222,67 @@ function keyboardHandler(e) {
       switchPauseMode();
       break;
     default:
-
+    //nothing yet
   }
+}
+
+function commonProcesses(){
+  if(shipSpawnerTimer == 0){
+    generateAllShips();
+    shipSpawnerTimer = 180;
+    //alert('friends: ' + friends.length + " | enemies: " + enemies.length);
+  }
+  else
+    shipSpawnerTimer--;
+}
+
+function generateAllShips(){
+  generateFriendShip();
+  generateEnemyShip();
+}
+function generateFriendShip(){
+  var localType = 1 + Math.floor(Math.random()*2);
+  var localY, localWidth, localHeight;
+  if(localType == 1){
+    localWidth = 44;
+    localHeight = 44;
+  }
+  else{
+    localWidth = 51;
+    localHeight = 52;
+  }
+  localY = Math.round(Math.random()*Math.floor(600/localHeight)) * localHeight;
+
+  friends.push({
+    x: 0-localWidth,
+    y: localY,
+    width: localWidth,
+    height: localHeight,
+    speed: 100,
+    type: localType
+  });
+}
+function generateEnemyShip(){
+  var localType = 1 + Math.floor(Math.random()*2);
+  var localY, localWidth, localHeight;
+  if(localType == 1){
+    localWidth = 49;
+    localHeight = 48;
+  }
+  else{
+    localWidth = 38;
+    localHeight = 44;
+  }
+  localY = Math.round(Math.random()*Math.floor(600/localHeight)) * localHeight;
+
+  enemies.push({
+    x: 960,
+    y: localY,
+    width: localWidth,
+    height: localHeight,
+    speed: 100,
+    type: localType
+  });
 }
 
 function playerShoot(){
@@ -239,6 +305,52 @@ function enemyShoot(enemy){
     y: enemy.x+enemy.height-3,
     speed: enemyShootSpeed
   });
+}
+
+function drawAllShips(){
+  drawFriendShips();
+  drawEnemyShips();
+}
+function drawFriendShips(){
+  for(var i in friends){
+    if(friends[i].type == 1)
+      c.drawImage(friend1Img, 0, 0, 44, 44,
+                              friends[i].x, friends[i].y, 44, 44);
+    else
+      c.drawImage(friend2Img, 0, 0, 38, 44,
+                            friends[i].x, friends[i].y, 38, 44);
+  }
+}
+function drawEnemyShips(){
+  for(var i in enemies){
+    if(enemies[i].type == 1)
+      c.drawImage(enemy1Img, 0, 0, 49, 48,
+                              enemies[i].x, enemies[i].y, 49, 48);
+    else
+      c.drawImage(enemy2Img, 0, 0, 38, 44,
+                            enemies[i].x, enemies[i].y, 38, 44);
+  }
+}
+
+function updateAllShips(){
+  updateFriendShips();
+  updateEnemyShips();
+}
+function updateFriendShips(){
+  for(var i in friends){
+    if(friends[i].x < 960)
+      friends[i].x += friends[i].speed/60;
+    else
+      friends.splice(i, 1);
+  }
+}
+function updateEnemyShips(){
+  for(var i in enemies){
+    if(enemies[i].x > 0)
+      enemies[i].x -= enemies[i].speed/60;
+    else
+      enemies.splice(i, 1);
+  }
 }
 
 function drawAllShoots(){

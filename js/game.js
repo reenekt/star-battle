@@ -165,13 +165,13 @@ var direction = 'none';
 var playerSpeed = 150; //скорость (пунктов в секунду)
 
 //выстрелы(снаряды), астрероиды и планеты на фоне
-var playerShootSpeed = 200; //скорость выстрела игрока (пунктов в секунду)
+var playerShootSpeed = 250; //скорость выстрела игрока (пунктов в секунду)
 var playerShoots = [];
 
 var friendShootSpeed = 200; //скорость выстрела дружеских кораблей (пунктов в секунду)
 var friendShoots = [];
 
-var enemyShootSpeed = 100; //скорость выстрела вражеских кораблей (пунктов в секунду)
+var enemyShootSpeed = 200; //скорость выстрела вражеских кораблей (пунктов в секунду)
 var enemyShoots = [];
 
 var asteroidSpeed = 100; //скорость движения астероидов (пунктов в секунду)
@@ -180,6 +180,8 @@ var asteroids = [];
 var planets = [];
 
 var shipSpawnerTimer = 10; //1 секунда = 60 кадрам
+var asteroidSpawnerTimer = 10;
+var shipShootingTimer = 120; //интервал для выстрелов кораблей
 
 /**** основная функция ****/
 //создание кадров
@@ -194,13 +196,21 @@ function drawAll(){
   defineDirection(); //определение направления движения игрока
   movePlayer(direction); //передвижение игрока
 
+  //Checkers - проверки
+  playerDamaged();
+  friendsDamaged();
+  enemyDamaged();
+  asteroidDamaged();
+
   //функции обновления объектов (координат)
   updateAllShips();
   updateAllShoots();
+  updateAsteroids();
 
   //функции рисования обхектов
   drawAllShoots();
   drawAllShips();
+  drawAsteroids();
 
   drawPlayer(playerX, playerY);
 
@@ -234,6 +244,145 @@ function commonProcesses(){
   }
   else
     shipSpawnerTimer--;
+
+  if(asteroidSpawnerTimer == 0){
+    generateAsteroid();
+    asteroidSpawnerTimer = 240;
+  }
+  else
+    asteroidSpawnerTimer--;
+}
+
+//------------------------------------------------------
+function updateAsteroids() {
+  for(var i in asteroids){
+    if(asteroids[i].x > -44)
+      asteroids[i].x -= asteroids[i].speed/60;
+    else
+      asteroids.splice(i,1);
+  }
+}
+
+function playerDamaged(){
+  //выстрелы вражеских кораблей
+  for(var i in enemyShoots){
+    if(isInside(enemyShoots[i].x, enemyShoots[i].y,  playerX, playerY, 44, 52)){
+      enemyShoots.splice(i, 1);
+      //alert('player damaged!');
+    }
+  }
+  //столконовения с кораблями врага
+  for(var i in enemies){
+    if(isInside(enemies[i].x, enemies[i].y,  playerX, playerY, 44, 52)){
+      enemies.splice(i, 1);
+      //alert('player damaged!');
+    }
+  }
+  //столкновения с астероидами
+  for(var i in asteroids){
+    if(!(playerX+44 < asteroids[i].x || asteroids[i].x+asteroids[i].width < playerX)){
+      if(!(playerY+52 < asteroids[i].y || asteroids[i].y+asteroids[i].height < playerY))
+      {
+        //потеря топлива
+        asteroids.splice(i, 1);
+      }
+    }
+  }
+}
+function friendsDamaged(){
+  //выстрелы игрока
+  for(var i in playerShoots){
+    for(var j in friends){
+      if(isInside(playerShoots[i].x+18, playerShoots[i].y+2, friends[j].x, friends[j].y, friends[j].width, friends[j].height)){
+        playerShoots.splice(i, 1);
+        friends.splice(j,1);
+        //вычитание очков и прочее
+      }
+    }
+  }
+  //выстрелы кораблей противников
+  for(var i in enemyShoots){
+    for(var j in friends){
+      if(isInside(enemyShoots[i].x+18, enemyShoots[i].y+2, friends[j].x, friends[j].y, friends[j].width, friends[j].height)){
+        enemyShoots.splice(i, 1);
+        friends.splice(j,1);
+      }
+    }
+  }
+  //столкновения с астероидами
+  //не обязательно, но можно дополнить
+}
+function enemyDamaged(){
+  //выстрелы игрока
+  for(var i in playerShoots){
+    for(var j in enemies){
+      if(isInside(playerShoots[i].x+18, playerShoots[i].y+2, enemies[j].x, enemies[j].y, enemies[j].width, enemies[j].height)){
+        playerShoots.splice(i, 1);
+        enemies.splice(j,1);
+        //добавление очков и прочее
+      }
+    }
+  }
+  //выстрелы кораблей союзников
+  for(var i in friendShoots){
+    for(var j in enemies){
+      if(isInside(friendShoots[i].x+18, friendShoots[i].y+2, enemies[j].x, enemies[j].y, enemies[j].width, enemies[j].height)){
+        friendShoots.splice(i, 1);
+        enemies.splice(j,1);
+      }
+    }
+  }
+}
+
+function asteroidDamaged() {
+  //выстрелы игрока
+  for(var i in playerShoots){
+    for(var j in asteroids){
+      if(isInside(playerShoots[i].x+18, playerShoots[i].y+2, asteroids[j].x, asteroids[j].y, asteroids[j].width, asteroids[j].height)){
+
+        //проверка наличия свойств
+        var res = "";
+        for(var q in playerShoots[i]){
+          res += q + " | "
+        }
+        //если закоментировать alert(res), то игра крашится. работает только с раскоментированным alert(res).
+        alert(res);
+        //конец проверки наличия свойств
+
+        if(asteroids[j].health > 1){
+          playerShoots.splice(i, 1);
+          asteroids[j].health--;
+        }
+        else{
+          playerShoots.splice(i, 1);
+          asteroids.splice(j,1);
+          //добавление очков и прочее
+        }
+      }
+    }
+  }
+  //выстрелы кораблей союзников
+  for(var i in friendShoots){
+    for(var j in asteroids){
+      if(isInside(friendShoots[i].x+18, friendShoots[i].y+2, asteroids[j].x, asteroids[j].y, asteroids[j].width, asteroids[j].height)){
+        friendShoots.splice(i, 1);
+        asteroids.splice(j,1);
+      }
+    }
+  }
+}
+
+function generateAsteroid() {
+  var localWidth = 44, localHeight = 44;
+  var localY = Math.round(Math.random()*Math.floor(600/localHeight)) * localHeight;
+  asteroids.push({
+    x: 960,
+    y: localY,
+    speed: asteroidSpeed,
+    width: localWidth,
+    height: localHeight,
+    health: 2
+  });
 }
 
 function generateAllShips(){
@@ -259,7 +408,8 @@ function generateFriendShip(){
     width: localWidth,
     height: localHeight,
     speed: 100,
-    type: localType
+    type: localType,
+    shootingTimer: shipShootingTimer
   });
 }
 function generateEnemyShip(){
@@ -281,7 +431,8 @@ function generateEnemyShip(){
     width: localWidth,
     height: localHeight,
     speed: 100,
-    type: localType
+    type: localType,
+    shootingTimer: shipShootingTimer
   });
 }
 
@@ -295,16 +446,30 @@ function playerShoot(){
 function friendShoot(friend){
   friendShoots.push({
     x: friend.x+friend.width,
-    y: friend.x+friend.height-3,
+    y: friend.y+friend.height/2-3,
     speed: friendShootSpeed
   });
 }
 function enemyShoot(enemy){
   enemyShoots.push({
-    x: enemy.x+enemy.width,
-    y: enemy.x+enemy.height-3,
+    x: enemy.x-36,
+    y: enemy.y+enemy.height/2-3,
     speed: enemyShootSpeed
   });
+}
+
+function drawAsteroids() {
+  for(var i in asteroids){
+    if(asteroids[i].health == 2){
+      c.drawImage(asteroidImg, 0, 0, 44, 44,
+                               asteroids[i].x, asteroids[i].y, asteroids[i].width, asteroids[i].height);
+    }
+    else{
+      c.drawImage(asteroid_damagedImg, 0, 0, 44, 44,
+                               asteroids[i].x, asteroids[i].y, asteroids[i].width, asteroids[i].height);
+    }
+
+  }
 }
 
 function drawAllShips(){
@@ -339,7 +504,16 @@ function updateAllShips(){
 function updateFriendShips(){
   for(var i in friends){
     if(friends[i].x < 960)
+    {
       friends[i].x += friends[i].speed/60;
+      if(friends[i].shootingTimer == 0)
+      {
+        friendShoot(friends[i]);
+        friends[i].shootingTimer = shipShootingTimer;
+      }
+      else
+        friends[i].shootingTimer--;
+    }
     else
       friends.splice(i, 1);
   }
@@ -347,7 +521,16 @@ function updateFriendShips(){
 function updateEnemyShips(){
   for(var i in enemies){
     if(enemies[i].x > 0)
+    {
       enemies[i].x -= enemies[i].speed/60;
+      if(enemies[i].shootingTimer == 0)
+      {
+        enemyShoot(enemies[i]);
+        enemies[i].shootingTimer = shipShootingTimer;
+      }
+      else
+        enemies[i].shootingTimer--;
+    }
     else
       enemies.splice(i, 1);
   }
@@ -401,7 +584,7 @@ function updateFriendShoots(){
 function updateEnemyShoots(){
   for(var i in enemyShoots){
     if(enemyShoots[i].x > -35)
-      enemyShoots[i].x += enemyShoots[i].speed/60;
+      enemyShoots[i].x -= enemyShoots[i].speed/60;
     else
       enemyShoots.splice(i, 1);
   }

@@ -152,6 +152,7 @@ drawInterface();
 /********************/
 /**** переменные ****/
 /********************/
+var isPaused = false;
 
 var playerX, playerY;
 playerX = 10;
@@ -179,13 +180,22 @@ var asteroids = [];
 
 var planets = [];
 
+var oils = [];
+var oilSpeed = 60;
+
 var shipSpawnerTimer = 10; //1 секунда = 60 кадрам
 var asteroidSpawnerTimer = 10;
+var oilSpawnerTimer = 0;
 var shipShootingTimer = 120; //интервал для выстрелов кораблей
+
+var time = 0;
+var oil = 15;
 
 /**** основная функция ****/
 //создание кадров
 var gameProcess = setTimeout(drawAll, 1000/60);
+//ход времени
+var timerProcess = setTimeout(timer, 1000);
 
 function drawAll(){
   commonProcesses();
@@ -201,21 +211,51 @@ function drawAll(){
   friendsDamaged();
   enemyDamaged();
   asteroidDamaged();
+  takeOil();
 
   //функции обновления объектов (координат)
   updateAllShips();
   updateAllShoots();
   updateAsteroids();
+  updateOil();
 
   //функции рисования обхектов
   drawAllShoots();
   drawAllShips();
   drawAsteroids();
+  drawOil();
 
   drawPlayer(playerX, playerY);
 
   //водготовка следующего кадра
   gameProcess = setTimeout(drawAll, 1000/60);
+  oilBalance();
+}
+
+function timer() {
+  //таймер
+  time++;
+
+  var minutes = Math.floor(time / 60);
+  var seconds = time % 60;
+
+  var minutesText, secondsText;
+  if(minutes < 10)
+    minutesText = "0"+minutes;
+  else
+    minutesText = minutes;
+
+  if(seconds < 10)
+    secondsText = "0"+seconds;
+  else
+    secondsText = seconds;
+
+  $('.timer').text(minutesText+":"+secondsText);
+
+  //топливо
+  oil--;
+  $('.oil').text(oil);
+  timerProcess = setTimeout(timer, 1000);
 }
 
 this.addEventListener('keyup', keyboardHandler); //обработка событий клавиатуры
@@ -226,10 +266,11 @@ function keyboardHandler(e) {
   //alert(e.keyCode);
   switch (e.keyCode) {
     case 32:
-      playerShoot();
+      if(!isPaused)
+        playerShoot();
       break;
     case 80:
-      switchPauseMode();
+      pauseGame();
       break;
     default:
     //nothing yet
@@ -251,6 +292,14 @@ function commonProcesses(){
   }
   else
     asteroidSpawnerTimer--;
+
+  if(oilSpawnerTimer == 0){
+    generateOil();
+    oilSpawnerTimer = 120;
+  }
+  else{
+    oilSpawnerTimer--;
+  }
 }
 
 //------------------------------------------------------
@@ -262,11 +311,25 @@ function updateAsteroids() {
       asteroids.splice(i,1);
   }
 }
+function updateOil() {
+  for(var i in oils){
+    if(oils[i].x > -40)
+      oils[i].x -= oils[i].speed/60;
+    else
+      oils.splice(i,1);
+  }
+}
 
 function playerDamaged(){
   //выстрелы вражеских кораблей
   for(var i in enemyShoots){
+    if(enemyShoots[i])
     if(isInside(enemyShoots[i].x, enemyShoots[i].y,  playerX, playerY, 44, 52)){
+      oil -= 15;
+      if(oil < 0){
+        oil = 0;
+      }
+      $('.oil').text(oil);
       enemyShoots.splice(i, 1);
       //alert('player damaged!');
     }
@@ -274,6 +337,11 @@ function playerDamaged(){
   //столконовения с кораблями врага
   for(var i in enemies){
     if(isInside(enemies[i].x, enemies[i].y,  playerX, playerY, 44, 52)){
+      oil -= 15;
+      if(oil < 0){
+        oil = 0;
+      }
+      $('.oil').text(oil);
       enemies.splice(i, 1);
       //alert('player damaged!');
     }
@@ -283,7 +351,11 @@ function playerDamaged(){
     if(!(playerX+44 < asteroids[i].x || asteroids[i].x+asteroids[i].width < playerX)){
       if(!(playerY+52 < asteroids[i].y || asteroids[i].y+asteroids[i].height < playerY))
       {
-        //потеря топлива
+        oil -= 15;
+        if(oil < 0){
+          oil = 0;
+        }
+        $('.oil').text(oil);
         asteroids.splice(i, 1);
       }
     }
@@ -293,6 +365,7 @@ function friendsDamaged(){
   //выстрелы игрока
   for(var i in playerShoots){
     for(var j in friends){
+      if(playerShoots[i])
       if(isInside(playerShoots[i].x+18, playerShoots[i].y+2, friends[j].x, friends[j].y, friends[j].width, friends[j].height)){
         playerShoots.splice(i, 1);
         friends.splice(j,1);
@@ -303,6 +376,7 @@ function friendsDamaged(){
   //выстрелы кораблей противников
   for(var i in enemyShoots){
     for(var j in friends){
+      if(enemyShoots[i])
       if(isInside(enemyShoots[i].x+18, enemyShoots[i].y+2, friends[j].x, friends[j].y, friends[j].width, friends[j].height)){
         enemyShoots.splice(i, 1);
         friends.splice(j,1);
@@ -316,6 +390,7 @@ function enemyDamaged(){
   //выстрелы игрока
   for(var i in playerShoots){
     for(var j in enemies){
+      if(playerShoots[i])
       if(isInside(playerShoots[i].x+18, playerShoots[i].y+2, enemies[j].x, enemies[j].y, enemies[j].width, enemies[j].height)){
         playerShoots.splice(i, 1);
         enemies.splice(j,1);
@@ -326,9 +401,25 @@ function enemyDamaged(){
   //выстрелы кораблей союзников
   for(var i in friendShoots){
     for(var j in enemies){
+      if(friendShoots[i])
       if(isInside(friendShoots[i].x+18, friendShoots[i].y+2, enemies[j].x, enemies[j].y, enemies[j].width, enemies[j].height)){
         friendShoots.splice(i, 1);
         enemies.splice(j,1);
+      }
+    }
+  }
+}
+
+function takeOil() {
+  for(var i in oils){
+    if(!(playerX+44 < oils[i].x || oils[i].x+oils[i].width < playerX)){
+      if(!(playerY+52 < oils[i].y || oils[i].y+oils[i].height < playerY))
+      {
+        oil += 15;
+        if(oil > 30)
+          oil -= oil%30;
+        $('.oil').text(oil);
+        oils.splice(i, 1);
       }
     }
   }
@@ -338,17 +429,8 @@ function asteroidDamaged() {
   //выстрелы игрока
   for(var i in playerShoots){
     for(var j in asteroids){
+      if(playerShoots[i])
       if(isInside(playerShoots[i].x+18, playerShoots[i].y+2, asteroids[j].x, asteroids[j].y, asteroids[j].width, asteroids[j].height)){
-
-        //проверка наличия свойств
-        var res = "";
-        for(var q in playerShoots[i]){
-          res += q + " | "
-        }
-        //если закоментировать alert(res), то игра крашится. работает только с раскоментированным alert(res).
-        alert(res);
-        //конец проверки наличия свойств
-
         if(asteroids[j].health > 1){
           playerShoots.splice(i, 1);
           asteroids[j].health--;
@@ -364,12 +446,32 @@ function asteroidDamaged() {
   //выстрелы кораблей союзников
   for(var i in friendShoots){
     for(var j in asteroids){
+      if(friendShoots[i])
       if(isInside(friendShoots[i].x+18, friendShoots[i].y+2, asteroids[j].x, asteroids[j].y, asteroids[j].width, asteroids[j].height)){
-        friendShoots.splice(i, 1);
-        asteroids.splice(j,1);
+        if(asteroids[j].health > 1){
+          friendShoots.splice(i, 1);
+          asteroids[j].health--;
+        }
+        else{
+          friendShoots.splice(i, 1);
+          asteroids.splice(j,1);
+          //добавление очков и прочее
+        }
       }
     }
   }
+}
+
+function generateOil() {
+  var localWidth = 40, localHeight = 57;
+  var localY = Math.round(Math.random()*Math.floor(600/localHeight)) * localHeight;
+  oils.push({
+    x: 960,
+    y: localY,
+    speed: oilSpeed,
+    width: localWidth,
+    height: localHeight
+  });
 }
 
 function generateAsteroid() {
@@ -469,6 +571,12 @@ function drawAsteroids() {
                                asteroids[i].x, asteroids[i].y, asteroids[i].width, asteroids[i].height);
     }
 
+  }
+}
+function drawOil() {
+  for(var i in oils){
+    c.drawImage(oil_objImg, 0, 0, 40, 57,
+                            oils[i].x, oils[i].y, 40, 57)
   }
 }
 
@@ -661,4 +769,29 @@ function movePlayer(dir){
     default:
     //ничего
   }
+}
+function pauseGame() {
+  //возобновление игры / пауза
+  if(isPaused){
+    isPaused = false;
+    gameProcess = setTimeout(drawAll, 1000/60);
+    timerProcess = setTimeout(timer, 1000);
+  }else{
+    isPaused = true;
+    clearTimeout(gameProcess);
+    clearTimeout(timerProcess);
+  }
+}
+function oilBalance() {
+  if(oil == 0){
+    gameOver();
+  }
+}
+function gameOver() {
+  //остановка игры
+  pauseGame();
+  //запрет на взаимодействие с игрой с помощью клавиатуры
+  this.removeEventListener('keyup', keyboardHandler);
+  //переход к результатам
+  
 }

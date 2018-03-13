@@ -26,6 +26,26 @@
   margin-bottom: 30px;
 }
 
+.timer{
+  position: absolute;
+  left: calc(116px - 1.1em);
+  top: calc(30px - 0.6em);
+  text-align: center;
+  vertical-align: middle;
+  font-size: 24px;
+  font-family: fantasy;
+}
+
+.oil{
+  position: absolute;
+  left: calc(116px - 0.6em);
+  top: calc(87px - 0.6em);
+  text-align: center;
+  vertical-align: middle;
+  font-size: 24px;
+  font-family: fantasy;
+}
+
 hr{
   border-bottom-color: #c24b05;
 }

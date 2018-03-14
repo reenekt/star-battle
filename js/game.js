@@ -87,6 +87,13 @@ oilImg.onload = function() {
 };
 oilImg.src = '../img/oil.png';
 
+//панель для очков
+var scoreImg = new Image();
+scoreImg.onload = function() {
+  //c.drawImage(oilImg, 200, 55);
+};
+scoreImg.src = '../img/score.png';
+
 //разумные области управления кораблем
 
 var areasImgTop = new Image();
@@ -117,15 +124,83 @@ areasImgDown.onload = function() {
 };
 areasImgDown.src = '../img/areas.png';
 
+//кнопка
+var btnImg = new Image();
+btnImg.onload = function() {
+  //c.drawImage(areasImgDown, 101, 201, 100, 100,
+  //                         550, 300, 100, 100);
+};
+btnImg.src = '../img/btn.png';
+
+//включенный звук
+var soundOnImg = new Image();
+soundOnImg.onload = function() {
+  //c.drawImage(areasImgDown, 101, 201, 100, 100,
+  //                         550, 300, 100, 100);
+};
+soundOnImg.src = '../img/sound_on.png';
+
+//выключенный звук
+var soundOffImg = new Image();
+soundOffImg.onload = function() {
+  //c.drawImage(areasImgDown, 101, 201, 100, 100,
+  //                         550, 300, 100, 100);
+};
+soundOffImg.src = '../img/sound_off.png';
+
+//увеличение шрифта
+var fontSizeMoreImg = new Image();
+fontSizeMoreImg.onload = function() {
+  //c.drawImage(areasImgDown, 101, 201, 100, 100,
+  //                         550, 300, 100, 100);
+};
+fontSizeMoreImg.src = '../img/font_size_more.png';
+
+//уменьшение шрифта
+var fontSizeLessImg = new Image();
+fontSizeLessImg.onload = function() {
+  //c.drawImage(areasImgDown, 101, 201, 100, 100,
+  //                         550, 300, 100, 100);
+};
+fontSizeLessImg.src = '../img/font_size_less.png';
+
+//пауза
+var pauseImg = new Image();
+pauseImg.onload = function() {
+  //c.drawImage(areasImgDown, 101, 201, 100, 100,
+  //                         550, 300, 100, 100);
+};
+pauseImg.src = '../img/pause.png';
+
+//продолжить игру
+var playImg = new Image();
+playImg.onload = function() {
+  //c.drawImage(areasImgDown, 101, 201, 100, 100,
+  //                         550, 300, 100, 100);
+};
+playImg.src = '../img/play.png';
+
 /** загрузка фонового изображения и интерфейса **/
 function drawBackground(){
   c.drawImage(backgroundImg, 0, 0);
 }
 function drawInterface(){
   c.globalAlpha = 0.8;
-
   c.drawImage(timerImg, 0, 0);
+  c.drawImage(pauseImg, 0, 0);
+
   c.drawImage(oilImg, 0, 63);
+  c.drawImage(scoreImg, 791, 6);
+  c.drawImage(btnImg, 727, 0); //звук
+  if(isSoundActive){
+    c.drawImage(soundOnImg, 727, 0);
+  }else{
+    c.drawImage(soundOffImg, 727, 0);
+  }
+  c.drawImage(btnImg, 663, 0); //шрифт+
+  c.drawImage(fontSizeMoreImg, 663, 0);
+  c.drawImage(btnImg, 600, 0); //шрифт-
+  c.drawImage(fontSizeLessImg, 600, 0);
 
   c.globalAlpha = 0.2;
 
@@ -153,6 +228,7 @@ drawInterface();
 /**** переменные ****/
 /********************/
 var isPaused = false;
+var isSoundActive = true;
 
 var playerX, playerY;
 playerX = 10;
@@ -190,6 +266,7 @@ var shipShootingTimer = 120; //интервал для выстрелов кор
 
 var time = 0;
 var oil = 15;
+var score = 0;
 
 /**** основная функция ****/
 //создание кадров
@@ -219,7 +296,7 @@ function drawAll(){
   updateAsteroids();
   updateOil();
 
-  //функции рисования обхектов
+  //функции рисования объектов
   drawAllShoots();
   drawAllShips();
   drawAsteroids();
@@ -259,6 +336,7 @@ function timer() {
 }
 
 this.addEventListener('keyup', keyboardHandler); //обработка событий клавиатуры
+this.addEventListener('click', mouseHandler);
 
 function keyboardHandler(e) {
   //P - 80 - пауза
@@ -276,7 +354,42 @@ function keyboardHandler(e) {
     //nothing yet
   }
 }
+function mouseHandler(e) {
+  //звук
+  if(isInside(mouseX, mouseY, 727, 0, 62, 62)){
+    isSoundActive = !isSoundActive;
+  }
+  //шаг изменения шрифта
+  var step = 4;
+  //шрифт+
+  if(isInside(mouseX, mouseY, 663, 0, 62, 62)){
+    var timerCurrentSize = parseInt($('.timer').css('font-size'));
+    if(timerCurrentSize <= 42)
+      $('.timer').css('font-size', timerCurrentSize+step)
 
+    var oilCurrentSize = parseInt($('.oil').css('font-size'));
+    if(oilCurrentSize <= 42)
+      $('.oil').css('font-size', oilCurrentSize+step)
+
+    var scoreCurrentSize = parseInt($('.score').css('font-size'));
+    if(scoreCurrentSize <= 42)
+      $('.score').css('font-size', scoreCurrentSize+step)
+  }
+  //шрифт-
+  if(isInside(mouseX, mouseY, 600, 0, 62, 62)){
+    var timerCurrentSize = parseInt($('.timer').css('font-size'));
+    if(timerCurrentSize >= 12)
+      $('.timer').css('font-size', timerCurrentSize-step)
+
+    var oilCurrentSize = parseInt($('.oil').css('font-size'));
+    if(oilCurrentSize >= 12)
+      $('.oil').css('font-size', oilCurrentSize-step)
+
+    var scoreCurrentSize = parseInt($('.score').css('font-size'));
+    if(scoreCurrentSize >= 12)
+      $('.score').css('font-size', scoreCurrentSize-step)
+  }
+}
 function commonProcesses(){
   if(shipSpawnerTimer == 0){
     generateAllShips();
@@ -369,7 +482,8 @@ function friendsDamaged(){
       if(isInside(playerShoots[i].x+18, playerShoots[i].y+2, friends[j].x, friends[j].y, friends[j].width, friends[j].height)){
         playerShoots.splice(i, 1);
         friends.splice(j,1);
-        //вычитание очков и прочее
+        score -= 10;
+        updateScoreInterface();
       }
     }
   }
@@ -394,7 +508,8 @@ function enemyDamaged(){
       if(isInside(playerShoots[i].x+18, playerShoots[i].y+2, enemies[j].x, enemies[j].y, enemies[j].width, enemies[j].height)){
         playerShoots.splice(i, 1);
         enemies.splice(j,1);
-        //добавление очков и прочее
+        score += 5;
+        updateScoreInterface();
       }
     }
   }
@@ -405,21 +520,6 @@ function enemyDamaged(){
       if(isInside(friendShoots[i].x+18, friendShoots[i].y+2, enemies[j].x, enemies[j].y, enemies[j].width, enemies[j].height)){
         friendShoots.splice(i, 1);
         enemies.splice(j,1);
-      }
-    }
-  }
-}
-
-function takeOil() {
-  for(var i in oils){
-    if(!(playerX+44 < oils[i].x || oils[i].x+oils[i].width < playerX)){
-      if(!(playerY+52 < oils[i].y || oils[i].y+oils[i].height < playerY))
-      {
-        oil += 15;
-        if(oil > 30)
-          oil -= oil%30;
-        $('.oil').text(oil);
-        oils.splice(i, 1);
       }
     }
   }
@@ -438,7 +538,8 @@ function asteroidDamaged() {
         else{
           playerShoots.splice(i, 1);
           asteroids.splice(j,1);
-          //добавление очков и прочее
+          score += 10;
+          updateScoreInterface();
         }
       }
     }
@@ -460,6 +561,42 @@ function asteroidDamaged() {
       }
     }
   }
+}
+
+function takeOil() {
+  for(var i in oils){
+    if(!(playerX+44 < oils[i].x || oils[i].x+oils[i].width < playerX)){
+      if(!(playerY+52 < oils[i].y || oils[i].y+oils[i].height < playerY))
+      {
+        oil += 15;
+        if(oil > 30)
+          oil -= oil%30;
+        $('.oil').text(oil);
+        oils.splice(i, 1);
+      }
+    }
+  }
+}
+
+function updateScoreInterface() {
+  var marginLeft = 0;
+  if(score < 0)
+    marginLeft += 0.2;
+
+  if(Math.abs(score) >= 0)
+    marginLeft += 0.6;
+  if(Math.abs(score) >= 10)
+    marginLeft += 0.2;
+  if(Math.abs(score) >= 100)
+    marginLeft += 0.2;
+  if(Math.abs(score) >= 1000)
+    marginLeft += 0.2;
+  if(Math.abs(score) >= 1000)
+    marginLeft += 0.2;
+  if(Math.abs(score) >= 10000) //не думаю что такое возможно
+    marginLeft += 0.2;
+  $('.score').css("left", "calc(890px - " + marginLeft + "em)")
+  $('.score').text(score);
 }
 
 function generateOil() {
@@ -778,6 +915,7 @@ function pauseGame() {
     timerProcess = setTimeout(timer, 1000);
   }else{
     isPaused = true;
+    c.drawImage(playImg, 0, 0);
     clearTimeout(gameProcess);
     clearTimeout(timerProcess);
   }
@@ -793,5 +931,5 @@ function gameOver() {
   //запрет на взаимодействие с игрой с помощью клавиатуры
   this.removeEventListener('keyup', keyboardHandler);
   //переход к результатам
-  
+  $('.gameOverForm').css('display', 'block')
 }

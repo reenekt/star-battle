@@ -46,6 +46,43 @@
   font-family: fantasy;
 }
 
+.score{
+  position: absolute;
+  left: calc(890px - 0.6em);
+  top: calc(29px - 0.6em);
+  text-align: center;
+  vertical-align: middle;
+  font-size: 24px;
+  font-family: fantasy;
+}
+
+.gameOverLabel{
+  color: red;
+  font-family: fantasy;
+  text-align: center;
+  font-size: 50px;
+}
+
+.gameOverForm{
+  display: none;
+  position: absolute;
+  top: calc(50% - 110px);
+  left: calc(50% - 170px);
+  width: 350px;
+  height: 170px;
+  text-align: center;
+  font-family: fantasy;
+}
+.gameOverForm > label{
+  color: white;
+  margin-right: 15px;
+}
+.gameOverForm > button{
+  margin-left: 15px;
+  font-size: 16px;
+  font-family: fantasy;
+}
+
 hr{
   border-bottom-color: #c24b05;
 }

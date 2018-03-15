@@ -9,13 +9,12 @@
 <div class="timer">00:00</div>
 <div class="oil">15</div>
 <div class="score">0</div>
-<form action="index.php" class="gameOverForm">
+<form action="index.php" class="gameOverForm" method="post">
   <h2 class="gameOverLabel">GAME OVER</h2>
-  <input type="hidden" name="score" value="">
-  <input type="hidden" name="time" value="">
+  <input id="score" type="hidden" name="score">
+  <input id="time" type="hidden" name="time">
   <label for="name">Имя </label>
-  <input type="text" name="name" value="">
-  <input type="hidden" name="id" value="">
-  <button type="submit" name="sunmit">Продолжить</button>
+  <input id="name" type="text" name="name">
+  <button type="submit" name="submitResult">Продолжить</button>
 </form>
 <script src="js/game.js"></script>

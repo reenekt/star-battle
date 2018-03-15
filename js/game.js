@@ -931,5 +931,7 @@ function gameOver() {
   //запрет на взаимодействие с игрой с помощью клавиатуры
   this.removeEventListener('keyup', keyboardHandler);
   //переход к результатам
-  $('.gameOverForm').css('display', 'block')
+  $('#score').val(score);
+  $('#time').val(time);
+  $('.gameOverForm').css('display', 'block');
 }

@@ -18,37 +18,33 @@
 <script type="text/javascript">
 <?php
 // установка переменной для загрузки контента
-if(!isset($_SESSION['player'])){
+if(!isset($_POST['submitResult'])){
   if(!isset($_POST['startBtn'])){
     //начальная страница
     echo 'var page = \'start\'';
+    $data = 'data: {page: page}';
   }
   else {
     //$_SESSION['player'] = $_POST['playerName'];
     echo 'var page = \'game\'';
+    $data = 'data: {page: page}';
   }
-}
-else if(!isset($_POST['endPlaying'])){
-  if(!isset($_POST['logout'])){
-    //если игра не была завершена - страница с игрой
-    echo 'var page = \'game\'';
-  }
-  else{
-    unset($_SESSION['player']);
-    echo 'var page = \'start\'';
-  }
-}
-else {
+}else{
   //страница результатов
   echo 'var page = \'result\'';
+  $data = 'data: {page: page, name: ' . '\'' . $_POST['name'] . '\'' . ', time: ' . $_POST['time'] . ', score: ' . $_POST['score'] . '}';
 }
+
 echo ";\n";
 ?>
 //alert(page);
   $.ajax({
     url: 'server.php',
     type: 'post',
-    data: {page: page},
+    <?php
+    echo $data;
+    echo ',';
+    ?>
     dataType: 'html',
     success: function(data, textStatus){
       $('#content').html(data);

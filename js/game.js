@@ -7,67 +7,57 @@ console.log('game.js loaded!')
 //Background - космос
 var backgroundImg = new Image();
 backgroundImg.onload = function() {
-  //c.drawImage(backgroundImg, 0, 0);
 };
 backgroundImg.src = '../img/game_bg.png';
 
 //player - игрок
 var playerImg = new Image();
 backgroundImg.onload = function() {
-  //c.drawImage(playerImg, 15, 5);
 };
 playerImg.src = '../img/player.png';
 
 //дружеские корабли
 var friend1Img = new Image();
 friend1Img.onload = function() {
-  //c.drawImage(friend1Img, 30, 10);
 };
 friend1Img.src = '../img/friend1.png';
 
 var friend2Img = new Image();
 friend2Img.onload = function() {
-  //c.drawImage(friend2Img, 45, 15);
 };
 friend2Img.src = '../img/friend2.png';
 
 //вражеские корабли
 var enemy1Img = new Image();
 enemy1Img.onload = function() {
-  //c.drawImage(enemy1Img, 60, 20);
 };
 enemy1Img.src = '../img/enemy1.png';
 
 var enemy2Img = new Image();
 enemy2Img.onload = function() {
-  //c.drawImage(enemy2Img, 75, 25);
 };
 enemy2Img.src = '../img/enemy2.png';
 
 //астероид и сломанный астрероид
 var asteroidImg = new Image();
 asteroidImg.onload = function() {
-  //c.drawImage(asteroidImg, 90, 30);
 };
 asteroidImg.src = '../img/asteroid.png';
 
 var asteroid_damagedImg = new Image();
 asteroid_damagedImg.onload = function() {
-  //c.drawImage(asteroid_damagedImg, 105, 35);
 };
 asteroid_damagedImg.src = '../img/asteroid_damaged.png';
 
 //бочка с топливом
 var oil_objImg = new Image();
 oil_objImg.onload = function() {
-  //c.drawImage(oil_objImg, 120, 40);
 };
 oil_objImg.src = '../img/oil_obj.png';
 
 //выстрел
 var shootImg = new Image();
 shootImg.onload = function() {
-  //c.drawImage(shootImg, 135, 45);
 };
 shootImg.src = '../img/shoot.png';
 
@@ -76,21 +66,18 @@ shootImg.src = '../img/shoot.png';
 //блок таймера
 var timerImg = new Image();
 timerImg.onload = function() {
-  //c.drawImage(timerImg, 150, 50);
 };
 timerImg.src = '../img/timer.png';
 
 //блок топлива
 var oilImg = new Image();
 oilImg.onload = function() {
-  //c.drawImage(oilImg, 200, 55);
 };
 oilImg.src = '../img/oil.png';
 
 //панель для очков
 var scoreImg = new Image();
 scoreImg.onload = function() {
-  //c.drawImage(oilImg, 200, 55);
 };
 scoreImg.src = '../img/score.png';
 
@@ -98,91 +85,98 @@ scoreImg.src = '../img/score.png';
 
 var areasImgTop = new Image();
 areasImgTop.onload = function() {
-  //c.drawImage(areasImgTop, 101, 0, 100, 100,
-  //                         350, 300, 100, 100);
 };
 areasImgTop.src = '../img/areas.png';
 
 var areasImgLeft = new Image();
 areasImgLeft.onload = function() {
-  //c.drawImage(areasImgLeft, 0, 101, 100, 100,
-  //                         250, 300, 100, 100);
 };
 areasImgLeft.src = '../img/areas.png';
 
 var areasImgRight = new Image();
 areasImgRight.onload = function() {
-  //c.drawImage(areasImgRight, 201, 101, 100, 100,
-  //                         450, 300, 100, 100);
 };
 areasImgRight.src = '../img/areas.png';
 
 var areasImgDown = new Image();
 areasImgDown.onload = function() {
-  //c.drawImage(areasImgDown, 101, 201, 100, 100,
-  //                         550, 300, 100, 100);
 };
 areasImgDown.src = '../img/areas.png';
 
 //кнопка
 var btnImg = new Image();
 btnImg.onload = function() {
-  //c.drawImage(areasImgDown, 101, 201, 100, 100,
-  //                         550, 300, 100, 100);
 };
 btnImg.src = '../img/btn.png';
 
 //включенный звук
 var soundOnImg = new Image();
 soundOnImg.onload = function() {
-  //c.drawImage(areasImgDown, 101, 201, 100, 100,
-  //                         550, 300, 100, 100);
 };
 soundOnImg.src = '../img/sound_on.png';
 
 //выключенный звук
 var soundOffImg = new Image();
 soundOffImg.onload = function() {
-  //c.drawImage(areasImgDown, 101, 201, 100, 100,
-  //                         550, 300, 100, 100);
 };
 soundOffImg.src = '../img/sound_off.png';
 
 //увеличение шрифта
 var fontSizeMoreImg = new Image();
 fontSizeMoreImg.onload = function() {
-  //c.drawImage(areasImgDown, 101, 201, 100, 100,
-  //                         550, 300, 100, 100);
 };
 fontSizeMoreImg.src = '../img/font_size_more.png';
 
 //уменьшение шрифта
 var fontSizeLessImg = new Image();
 fontSizeLessImg.onload = function() {
-  //c.drawImage(areasImgDown, 101, 201, 100, 100,
-  //                         550, 300, 100, 100);
 };
 fontSizeLessImg.src = '../img/font_size_less.png';
 
 //пауза
 var pauseImg = new Image();
 pauseImg.onload = function() {
-  //c.drawImage(areasImgDown, 101, 201, 100, 100,
-  //                         550, 300, 100, 100);
 };
 pauseImg.src = '../img/pause.png';
 
 //продолжить игру
 var playImg = new Image();
 playImg.onload = function() {
-  //c.drawImage(areasImgDown, 101, 201, 100, 100,
-  //                         550, 300, 100, 100);
 };
 playImg.src = '../img/play.png';
 
+//Планеты
+var planetImg1 = new Image();
+planetImg1.onload = function() {
+};
+planetImg1.src = '../img/planet1.png';
+
+var planetImg2 = new Image();
+planetImg2.onload = function() {
+};
+planetImg2.src = '../img/planet2.png';
+
+var planetImg3 = new Image();
+planetImg3.onload = function() {
+};
+planetImg3.src = '../img/planet3.png';
+
+var planetImg4 = new Image();
+planetImg4.onload = function() {
+};
+planetImg4.src = '../img/planet4.png';
+
+var planetImg5 = new Image();
+planetImg5.onload = function() {
+};
+planetImg5.src = '../img/planet5.png';
+
 /** загрузка фонового изображения и интерфейса **/
 function drawBackground(){
-  c.drawImage(backgroundImg, 0, 0);
+  if(bgPosition == 0)
+    bgPosition = 960;
+  c.drawImage(backgroundImg, bgPosition-960, 0);
+  c.drawImage(backgroundImg, bgPosition, 0);
 }
 function drawInterface(){
   c.globalAlpha = 0.8;
@@ -230,6 +224,9 @@ drawInterface();
 var isPaused = false;
 var isSoundActive = true;
 
+var bgPosition = 960;
+var bgMoveSpeed = 1;
+
 var playerX, playerY;
 playerX = 10;
 playerY = 240;
@@ -255,6 +252,7 @@ var asteroidSpeed = 100; //скорость движения астероидо�
 var asteroids = [];
 
 var planets = [];
+var planetsSpawnerTimer = 30;
 
 var oils = [];
 var oilSpeed = 60;
@@ -278,6 +276,7 @@ function drawAll(){
   commonProcesses();
 
   drawBackground();
+  drawPlanets();
   drawInterface();
 
   defineDirection(); //определение направления движения игрока
@@ -291,12 +290,14 @@ function drawAll(){
   takeOil();
 
   //функции обновления объектов (координат)
+  updatePlanets();
   updateAllShips();
   updateAllShoots();
   updateAsteroids();
   updateOil();
 
   //функции рисования объектов
+
   drawAllShoots();
   drawAllShips();
   drawAsteroids();
@@ -355,6 +356,10 @@ function keyboardHandler(e) {
   }
 }
 function mouseHandler(e) {
+  //пауза
+  if(isInside(mouseX, mouseY, 0, 0, 62, 62)){
+    pauseGame();
+  }
   //звук
   if(isInside(mouseX, mouseY, 727, 0, 62, 62)){
     isSoundActive = !isSoundActive;
@@ -413,6 +418,16 @@ function commonProcesses(){
   else{
     oilSpawnerTimer--;
   }
+
+  if(planetsSpawnerTimer == 0){
+    generatePlanet();
+    planetsSpawnerTimer = 5+Math.floor(Math.random()*10)*60; //от 5 до 15 секунд
+  }
+  else{
+    planetsSpawnerTimer--;
+  }
+
+  bgPosition -= bgMoveSpeed;
 }
 
 //------------------------------------------------------
@@ -599,6 +614,40 @@ function updateScoreInterface() {
   $('.score').text(score);
 }
 
+function generatePlanet() {
+  var localType = 1 + Math.floor(Math.random()*5);
+  var localY, localWidth, localHeight;
+  if(localType == 1){
+    localWidth = 320;
+    localHeight = 139;
+  }
+  else if(localType == 2){
+    localWidth = 300;
+    localHeight = 300;
+  }
+  else if(localType == 3){
+    localWidth = 300;
+    localHeight = 300;
+  }
+  else if(localType == 4){
+    localWidth = 272;
+    localHeight = 272;
+  }
+  else{
+    localWidth = 265;
+    localHeight = 195;
+  }
+  localY = Math.round(Math.random()*Math.floor(600/localHeight) / Math.ceil(Math.random()*4)) * localHeight;
+
+  planets.push({
+    x: 960,
+    y: localY,
+    width: localWidth,
+    height: localHeight,
+    speed: 10+localType*15,
+    type: localType
+  });
+}
 function generateOil() {
   var localWidth = 40, localHeight = 57;
   var localY = Math.round(Math.random()*Math.floor(600/localHeight)) * localHeight;
@@ -739,6 +788,48 @@ function drawEnemyShips(){
     else
       c.drawImage(enemy2Img, 0, 0, 38, 44,
                             enemies[i].x, enemies[i].y, 38, 44);
+  }
+}
+
+function drawPlanets() {
+  for(var i in planets){
+    if(planets[i].type == 1){
+      c.globalAlpha = 0.9;
+      c.drawImage(planetImg1, 0, 0, planets[i].width, planets[i].height,
+                              planets[i].x, planets[i].y, planets[i].width, planets[i].height);
+      c.globalAlpha = 1;
+    } else if(planets[i].type == 2){
+      c.globalAlpha = 0.9;
+      c.drawImage(planetImg2, 0, 0, planets[i].width, planets[i].height,
+                              planets[i].x, planets[i].y, planets[i].width, planets[i].height);
+      c.globalAlpha = 1;
+    } else if(planets[i].type == 3){
+      c.globalAlpha = 0.9;
+      c.drawImage(planetImg3, 0, 0, planets[i].width, planets[i].height,
+                              planets[i].x, planets[i].y, planets[i].width, planets[i].height);
+      c.globalAlpha = 1;
+    } else if(planets[i].type == 4){
+      c.globalAlpha = 0.9;
+      c.drawImage(planetImg4, 0, 0, planets[i].width, planets[i].height,
+                              planets[i].x, planets[i].y, planets[i].width, planets[i].height);
+      c.globalAlpha = 1;
+    } else {
+      c.globalAlpha = 0.9;
+      c.drawImage(planetImg5, 0, 0, planets[i].width, planets[i].height,
+                              planets[i].x, planets[i].y, planets[i].width, planets[i].height);
+      c.globalAlpha = 1;
+    }
+  }
+}
+
+function updatePlanets() {
+  for(var i in planets){
+    if(planets[i].x > -planets[i].width){
+      planets[i].x -= planets[i].speed/60;
+    }
+    else{
+      planets.splice(i, 1);
+    }
   }
 }
 

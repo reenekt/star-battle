@@ -103,6 +103,12 @@
   margin-left: calc(50% - 60px);
 }
 
+.instructions{
+  font-size: 18px;
+  text-align: justify;
+  line-height: 26px;
+}
+
 hr{
   border-bottom-color: #c24b05;
 }

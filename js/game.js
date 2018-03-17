@@ -464,14 +464,16 @@ function playerDamaged(){
   }
   //столконовения с кораблями врага
   for(var i in enemies){
-    if(isInside(enemies[i].x, enemies[i].y,  playerX, playerY, 44, 52)){
-      oil -= 15;
-      if(oil < 0){
-        oil = 0;
+    if(!(playerX+44 < enemies[i].x || enemies[i].x+enemies[i].width < playerX)){
+      if(!(playerY+52 < enemies[i].y || enemies[i].y+enemies[i].height < playerY)){
+        oil -= 15;
+        if(oil < 0){
+          oil = 0;
+        }
+        $('.oil').text(oil);
+        enemies.splice(i, 1);
+        //alert('player damaged!');
       }
-      $('.oil').text(oil);
-      enemies.splice(i, 1);
-      //alert('player damaged!');
     }
   }
   //столкновения с астероидами
@@ -1021,6 +1023,7 @@ function gameOver() {
   pauseGame();
   //запрет на взаимодействие с игрой с помощью клавиатуры
   this.removeEventListener('keyup', keyboardHandler);
+  this.removeEventListener('click', mouseHandler);
   //переход к результатам
   $('#score').val(score);
   $('#time').val(time);
